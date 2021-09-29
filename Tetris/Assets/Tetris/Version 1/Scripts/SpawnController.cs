@@ -5,37 +5,32 @@ using System.Linq;
 
 public class SpawnController : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> blockPrefabs;
-    private Queue<GameObject> blocksPool = new Queue<GameObject>(7);
-    private void OnEnable()
+    [SerializeField] private List<BlockController>blockPrefabs;
+    private Queue<BlockController> blocksPool;
+    private RepositoryBase repositoryBase;
+
+    public void Initialize(RepositoryBase repositoryBase)
     {
-        EventManager.blockOnGroundEvent += SpawnNewBlock;
+        this.repositoryBase = repositoryBase;
+        blocksPool = new Queue<BlockController>(blockPrefabs.Count);
+        ShuffleBlocks();
     }
 
-    private void OnDisable()
-    {
-        EventManager.blockOnGroundEvent -= SpawnNewBlock;
-
-    }
-    private void Start()
-    {
-        foreach (GameObject item in blockPrefabs)
-        {
-            blocksPool.Enqueue(item);
-        }
-        SpawnNewBlock();
-    }
-
-    private void SpawnNewBlock()
+    public void SpawnNewBlock()
     {
         if (blocksPool.Count == 0)
         {
-            blockPrefabs = blockPrefabs.OrderBy(x => Random.Range(0, blockPrefabs.Count - 1)).ToList();
-            foreach (GameObject item in blockPrefabs)
-            {
-                blocksPool.Enqueue(item);
-            }
+            ShuffleBlocks();
         }
-        Instantiate(blocksPool.Dequeue(), transform, false);
+        BlockController blockController = Instantiate(blocksPool.Dequeue(), transform, false);
+        blockController.Initialize(repositoryBase);
+    }
+    private void ShuffleBlocks()
+    {
+        blockPrefabs = blockPrefabs.OrderBy(x => Random.Range(0, blockPrefabs.Count - 1)).ToList();
+        foreach (BlockController item in blockPrefabs)
+        {
+            blocksPool.Enqueue(item);
+        }
     }
 }

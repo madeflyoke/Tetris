@@ -8,12 +8,15 @@ public class GridCreator : MonoBehaviour
     [SerializeField] private GameObject borderCell;
     [SerializeField] private GameObject cellsHandler;
     [SerializeField] private GameObject borderHandler;
-    public static int width = 9;
-    public static int height = 19;
-    void Awake()
-    {
+    private int width;
+    private int height;
+
+    public void Initialize(RepositoryBase repos)
+    {      
+        width = repos.FieldInfo.fieldWidth;
+        height = repos.FieldInfo.fieldHeight;
         SpawnFillCells();
-        SpawnBorderCells();       
+        SpawnBorderCells();
     }
 
     private void SpawnFillCells()

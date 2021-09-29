@@ -5,60 +5,74 @@ using UnityEngine;
 public class BlockController : MonoBehaviour
 {
     [SerializeField] private Vector3 rotationPoint;
-    private float prevTime;
-    private float fallTime = 0.9f;
-    private float shiftFallTime = 10f;
-
-    private int width = GridCreator.width;
-    private int height = GridCreator.height;
-    private static Transform[,] blockCells= new Transform[GridCreator.width, GridCreator.height + 1];
+    private int width;
+    private int height;
+    private Transform[,] blockCells;
+    
 
     private void Awake()
     {
         CheckEndLine();
     }
 
-    void Update()
+    public void Initialize(RepositoryBase repos)
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        width = repos.FieldInfo.fieldWidth;
+        height = repos.FieldInfo.fieldHeight;
+        blockCells = repos.FieldInfo.blockCells;
+    }
+
+    private void OnEnable()
+    {
+        EventManager.blockMoveEvent += MoveBlock;
+    }
+
+    private void OnDisable()
+    {
+        EventManager.blockMoveEvent -= MoveBlock;
+    }
+
+    private void MoveBlock(Direction dir)
+    {
+        switch (dir)
         {
-            transform.position += new Vector3(-1f, 0f, 0f);
-            if (!ValidMove())
-            {
-                transform.position -= new Vector3(-1f, 0f, 0f);
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            transform.position += new Vector3(1f, 0f, 0f);
-            if (!ValidMove())
-            {
-                transform.position -= new Vector3(1f, 0f, 0f);
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.W))
-        {
-            transform.RotateAround(transform.TransformPoint(rotationPoint), new Vector3(0, 0, 1), 90f);
-            if (!ValidMove())
-            {
-                transform.RotateAround(transform.TransformPoint(rotationPoint), new Vector3(0, 0, 1), -90f);
-            }
+            case Direction.Left:
+                transform.position += new Vector3(-1f, 0f, 0f);
+                if (!ValidMove())
+                {
+                    transform.position -= new Vector3(-1f, 0f, 0f);
+                }
+                break;
+            case Direction.Right:
+                transform.position += new Vector3(1f, 0f, 0f);
+                if (!ValidMove())
+                {
+                    transform.position -= new Vector3(1f, 0f, 0f);
+                }
+                break;
+            case Direction.Down:
+                transform.position += new Vector3(0f, -1f, 0f);
+                if (!ValidMove())
+                {
+                    transform.position -= new Vector3(0f, -1f, 0f);
+                    AddBlockCell();
+                    CheckLines();
+                    enabled = false;
+                    EventManager.CallOnBlockOnGround();
+                }
+                break;
+            case Direction.Rotation:
+                transform.RotateAround(transform.TransformPoint(rotationPoint), new Vector3(0, 0, 1), 90f);
+                if (!ValidMove())
+                {
+                    transform.RotateAround(transform.TransformPoint(rotationPoint), new Vector3(0, 0, 1), -90f);
+                }
+                break;
         }
 
-        if (Time.time > prevTime + (Input.GetKey(KeyCode.S) ? fallTime / shiftFallTime : fallTime))
-        {
-            transform.position += new Vector3(0f, -1f, 0f);
-            if (!ValidMove())
-            {
-                transform.position -= new Vector3(0f, -1f, 0f);
-                AddBlockCell();
-                CheckLines();
-                enabled = false;
-                EventManager.CallOnBlockOnGround();
-            }
-            prevTime = Time.time;
-        }
     }
+
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
