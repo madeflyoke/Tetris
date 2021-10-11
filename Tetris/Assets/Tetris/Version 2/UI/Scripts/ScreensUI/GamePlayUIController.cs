@@ -7,7 +7,6 @@ public class GamePlayUIController : MonoBehaviour
 {
     [SerializeField] private Text scoreUI;
     [SerializeField] private Transform nextBlockUI;
-
     private List<GameObject> blocksUI = new List<GameObject>();
     private int currentBlockIndex = 1; //start with 2nd block (1st index)
     private GameObject prevBlock;//cache previous ui block
@@ -15,14 +14,9 @@ public class GamePlayUIController : MonoBehaviour
     {
         EventManager.pointsAddEvent += PointsAddUI;
         EventManager.nextSpawnBlockEvent += ChangeNextBlockUI;
-    }
-    
-    public void OnEnable()
-    {
         EventManager.CallOnInitBlocksUI(blocksUI, nextBlockUI);
         prevBlock = blocksUI[0];
     }
-
     private void OnDisable()
     {
         EventManager.pointsAddEvent -= PointsAddUI;
@@ -42,5 +36,16 @@ public class GamePlayUIController : MonoBehaviour
         prevBlock.SetActive(false);
         prevBlock = blocksUI[currentBlockIndex];
         currentBlockIndex++;
+    }
+
+    public void RefreshGameplayUI()
+    {
+        foreach (GameObject item in blocksUI)
+        {
+            item.SetActive(false);
+        }
+        scoreUI.text = "SCORE:0";
+        prevBlock = blocksUI[0];
+        currentBlockIndex = 1;
     }
 }

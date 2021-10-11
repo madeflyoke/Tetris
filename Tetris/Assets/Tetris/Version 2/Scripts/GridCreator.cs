@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class GridCreator : MonoBehaviour
 {
-    [SerializeField] private GameObject cell;
+    //[SerializeField] private GameObject cell;  //all comments for spawning cells inside grid
     [SerializeField] private GameObject borderCell;
-    [SerializeField] private GameObject cellsHandler;
+    //[SerializeField] private GameObject cellsHandler;
     [SerializeField] private GameObject borderHandler;
     private int width;
     private int height;
@@ -19,7 +19,7 @@ public class GridCreator : MonoBehaviour
         SpawnBorderCells();
     }
 
-    //private void SpawnFillCells() // for spawning grid cells inside
+    //private void SpawnFillCells()    
     //{
     //    for (int y = 0; y < height; y++)
     //    {
