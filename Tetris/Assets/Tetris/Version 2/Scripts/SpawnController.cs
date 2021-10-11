@@ -9,7 +9,6 @@ public class SpawnController : MonoBehaviour
     private List<GameObject> blocksUIRef;
     private Queue<BlockController> blocksQue;
     private RepositoryBase repositoryBase;
-
     public void Initialize(RepositoryBase repositoryBase)
     {
         EventManager.initSpawnerBlocksUIEvent += InitUIBlocks;
@@ -20,10 +19,6 @@ public class SpawnController : MonoBehaviour
     private void OnDisable()
     {
         EventManager.initSpawnerBlocksUIEvent -= InitUIBlocks;
-    }
-    private void Start()
-    {
-        ShuffleBlocks();
     }
     public void SpawnNewBlock()
     {
@@ -82,5 +77,16 @@ public class SpawnController : MonoBehaviour
             block.SetActive(false);
         }
         blocksUIRef = initBlocks;
+        ShuffleBlocks();
     }
+    public void RefreshSpawn()
+    {
+        foreach (Transform item in transform)
+        {
+            Destroy(item.gameObject);
+        }
+        blocksQue = new Queue<BlockController>(blockPrefabs.Count);
+        ShuffleBlocks();
+    }
+
 }

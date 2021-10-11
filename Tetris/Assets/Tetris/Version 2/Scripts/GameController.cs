@@ -15,49 +15,47 @@ public class GameController : MonoBehaviour
     [SerializeField] private float fallTime = 0.9f;
     [SerializeField] private float shiftFallTime = 10f;
     [SerializeField] private int pointsByLine;
+    [SerializeField] private int FPSlimit;
     private float currentSpeed;
     private float prevTime;
     private RepositoryBase repositoryBase;
     private SpawnController spawnController;
     private Transform[,] blockCells;
 
+    private bool gameRunning=false;
+
     private void OnEnable()
     {
         EventManager.blockOnGroundEvent += SpawnBlock;
         EventManager.inputButtonEvent += InputHolder;
-        EventManager.restartGameEvent += RestartGame;
-        EventManager.exitGameEvent += ExitGame;
     }
 
     private void OnDisable()
     {
         EventManager.blockOnGroundEvent -= SpawnBlock;
         EventManager.inputButtonEvent -= InputHolder;
-        EventManager.restartGameEvent -= RestartGame;
-        EventManager.exitGameEvent -= ExitGame;
-
-
     }
     public void Initialize(RepositoryBase repositoryBase, SpawnController spawnController)
     {
+        Application.targetFrameRate = FPSlimit;
         this.repositoryBase = repositoryBase;
         this.spawnController = spawnController;
         blockCells = repositoryBase.FieldInfo.blockCells;
         currentSpeed = fallTime;
-    }
-
-    private void Start()
-    {
         spawnController.SpawnNewBlock();
+        gameRunning = true;
     }
 
     private void Update()
     {
-        if (Time.time > prevTime + currentSpeed)
+        if (gameRunning)
         {
-            EventManager.CallOnBlockMove(Direction.Down);
-            prevTime = Time.time;
-        }
+            if (Time.time > prevTime + currentSpeed)
+            {
+                EventManager.CallOnBlockMove(Direction.Down);
+                prevTime = Time.time;
+            }
+        }        
     }
 
     private void InputHolder(Direction dir)
@@ -96,7 +94,8 @@ public class GameController : MonoBehaviour
         else
         {           
             repositoryBase.PlayerPrefsInfo.SaveMaxScore();
-            EventManager.CallOnEndGame(repositoryBase);
+            EventManager.CallOnChangeGameState(GameState.End);
+            gameRunning = false;
         }
     }
 
@@ -158,13 +157,5 @@ public class GameController : MonoBehaviour
                 }
             }
         }
-    }
-    private void RestartGame()
-    {
-        SceneManager.LoadSceneAsync(0);
-    }
-    private void ExitGame()
-    {
-        Application.Quit();
     }
 }

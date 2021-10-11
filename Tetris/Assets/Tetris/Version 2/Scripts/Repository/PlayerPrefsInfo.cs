@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerPrefsInfo 
 {
-    private const string MaxScoreKey = "MaxScore";
+    private const string MaxScoreKey = "MaxScoreKey";
     public int MaxScore { get; private set; }
     public int CurrentScore=0;
 

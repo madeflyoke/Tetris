@@ -14,7 +14,6 @@ public class RepositoryBase : MonoBehaviour
     {
         fieldInfo = new FieldInfo();
         playerPrefsInfo = new PlayerPrefsInfo();
-    } 
+    }
 
-   
 }
