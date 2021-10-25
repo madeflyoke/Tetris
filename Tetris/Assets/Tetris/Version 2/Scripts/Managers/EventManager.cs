@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 public class EventManager 
 {
-    public static Action <GameState>changeGameStateEvent;
+    public static event Action <GameState>changeGameStateEvent;
 
-    public static Action blockOnGroundEvent;
-    public static Action<Direction> blockMoveEvent;
-    public static Action<Direction> inputButtonEvent;
+    public static event Action blockOnGroundEvent;
+    public static event Action <Direction> blockMoveEvent;
+    public static event Action <Direction> inputButtonEvent;
 
-    public static Action<int> pointsAddEvent;
-    public static Action nextSpawnBlockEvent;
-    public static Action<List<GameObject>, Transform> initSpawnerBlocksUIEvent;
+    public static event Action<int> pointsAddEvent;
+    public static event Action  nextSpawnBlockEvent;
+    public static event Action<List<GameObject>, Transform> initSpawnerBlocksUIEvent;
 
     public static void CallOnChangeGameState(GameState gamestate)
     {
-        changeGameStateEvent?.Invoke(gamestate);
+        changeGameStateEvent?.Invoke(gamestate);       
     }
 
     public static void CallOnBlockOnGround()
