@@ -1156,7 +1156,7 @@ MonoBehaviour:
   fallTime: 0.8
   shiftFallTime: 15
   pointsByLine: 100
-  FPSlimit: 30
+  FPSlimit: 60
 --- !u!4 &524349823
 Transform:
   m_ObjectHideFlags: 0
