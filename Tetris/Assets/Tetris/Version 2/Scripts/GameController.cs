@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour
     private SpawnController spawnController;
     private Transform[,] blockCells;
 
-    private bool gameRunning=false;
+    private bool gameRunning = false;
 
     private void OnEnable()
     {
@@ -55,7 +55,7 @@ public class GameController : MonoBehaviour
                 EventManager.CallOnBlockMove(Direction.Down);
                 prevTime = Time.time;
             }
-        }        
+        }
     }
 
     private void InputHolder(Direction dir)
@@ -92,7 +92,7 @@ public class GameController : MonoBehaviour
             spawnController.SpawnNewBlock();
         }
         else
-        {           
+        {
             repositoryBase.PlayerPrefsInfo.SaveMaxScore();
             EventManager.CallOnChangeGameState(GameState.End);
             gameRunning = false;

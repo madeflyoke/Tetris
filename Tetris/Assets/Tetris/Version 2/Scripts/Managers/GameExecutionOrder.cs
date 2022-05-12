@@ -1,4 +1,5 @@
 using UnityEngine;
+using Zenject;
 
 public enum GameState
 {
@@ -10,11 +11,14 @@ public enum GameState
 }
 public class GameExecutionOrder : MonoBehaviour //strict order
 {
+    [Inject] private AdsController adsController;
+
     RepositoryBase repositoryBase;
     GridCreator gridCreator;
     SpawnController spawnController;
     GamePlayUIController gamePlayUIController;
     GameController gameController;
+
     private void OnEnable()
     {
         EventManager.changeGameStateEvent += GameStateChange;
@@ -30,12 +34,15 @@ public class GameExecutionOrder : MonoBehaviour //strict order
         gridCreator = FindObjectOfType<GridCreator>();
         spawnController = FindObjectOfType<SpawnController>();
         gamePlayUIController = FindObjectOfType<GamePlayUIController>();
-        gameController = FindObjectOfType<GameController>();         
+        gameController = FindObjectOfType<GameController>();
+        adsController.Initialize();
     }
+
     private void Start()
     {
         EventManager.CallOnChangeGameState(GameState.Launch);
     }
+
     private void GameStateChange(GameState gamestate)
     {
         switch (gamestate)
@@ -47,16 +54,19 @@ public class GameExecutionOrder : MonoBehaviour //strict order
                 Initialize();
                 break;
             case GameState.Restart:
+                adsController.ShowAd(AdsController.AdType.Interstitial);
                 RestartInitialize();
                 break;
         }
     }
+
     private void PreInitialize()
     {
         repositoryBase.Initialize();
         spawnController.Initialize(repositoryBase);
         gamePlayUIController.Initialize();
     }
+
     private void Initialize()
     {
         gridCreator.Initialize(repositoryBase);
@@ -68,8 +78,6 @@ public class GameExecutionOrder : MonoBehaviour //strict order
         repositoryBase.Initialize();
         spawnController.RefreshSpawn();
         gamePlayUIController.RefreshGameplayUI();
-        gameController.Initialize(repositoryBase,spawnController);
+        gameController.Initialize(repositoryBase, spawnController);
     }
-
-
 }
