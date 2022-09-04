@@ -1,6 +1,7 @@
 # Tetris
 
 ## Details
+* Title: "Spatris"
 * Genre(s): Arcade  
 * Platform(s): Android
 * Engine: Unity
